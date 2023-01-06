@@ -7,6 +7,8 @@ terraform {
 
 provider "google" {
   # credentials = file("gcp-tf-sa-key.json")
+  # located in secrets
+
   project = var.project_id
   region  = var.region
 }
@@ -14,19 +16,28 @@ provider "google" {
 resource "google_storage_bucket" "task-cf-storage-bucket" {
     name     = "${var.project_id}-storage-bucket"
     location = var.region
-    force_destroy = true
+    #force_destroy = true
 }
 
 resource "google_bigquery_dataset" "task_cf_dataset" {
   dataset_id = var.dataset_id
-  description = "This dataset is public"
+  description = "Public dataset for cf-task"
   location = var.region
 }
 
 resource "google_bigquery_table" "task_cf_table" {
-  dataset_id = var.dataset_id
+  dataset_id = google_bigquery_dataset.task_cf_dataset.dataset_id
   table_id   = var.table_id
   schema = file("schemas/bq_table_schema/task-cf-raw.json")
+}
+
+resource "google_pubsub_topic" "topic" {
+  name = var.pubsub_topic_name
+}
+
+resource "google_pubsub_subscription" "subscription" {
+  name  = var.subscription_name
+  topic = google_pubsub_topic.topic.name
 }
 
 data "archive_file" "source" {
@@ -39,7 +50,7 @@ resource "google_storage_bucket_object" "zip" {
     source       = data.archive_file.source.output_path
     content_type = "application/zip"
 
-    name         = "src-${data.archive_file.source.output_md5}.zip"
+    name         = "func-${data.archive_file.source.output_md5}.zip"
     bucket       = google_storage_bucket.task-cf-storage-bucket.name
 
     depends_on   = [
@@ -63,6 +74,7 @@ resource "google_cloudfunctions_function" "task-cf-function" {
       GCP_PROJECT = var.project_id
       DATASET_ID = var.dataset_id
       OUTPUT_TABLE = google_bigquery_table.task_cf_table.table_id
+      TOPIC_ID = var.pubsub_topic_name
     }
 
     depends_on            = [

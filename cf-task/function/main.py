@@ -8,6 +8,7 @@ from datetime import datetime, time as date_time
 import requests
 
 from google.cloud import bigquery
+from google.cloud.pubsub_v1 import PublisherClient
 
 logging.basicConfig(level=logging.INFO)
 
@@ -15,6 +16,34 @@ FUNCTION_REGION = getenv("FUNCTION_REGION")
 PROJECT_ID = getenv("GCP_PROJECT")
 OUTPUT_TABLE = getenv("OUTPUT_TABLE")
 DATASET_ID = getenv("DATASET_ID")
+TOPIC_ID = getenv("TOPIC_ID")
+
+
+class PubSubPublisher:
+    def __init__(self, publisher: PublisherClient,
+                 project_id: str,
+                 topic_id: str, ):
+        self._publisher = publisher
+        self._topic_path = publisher.topic_path(project_id, topic_id)
+
+    def publish(self, data: bytes) -> bool:
+        try:
+
+            future = self._publisher.publish(self._topic_path,
+                                             data)
+            try:
+                future.result()
+                logging.info("Successfully published to topic")
+                return True
+            except RuntimeError as err:
+                logging.error("An error occurred during "  # pylint: disable=E1205
+                              "publishing the message",
+                              str(err))
+                return False
+
+        except Exception as err:  # pylint: disable=broad-except
+            logging.error(f"Unexpected error: {str(err)}")  # pylint: disable=E1205
+            return False
 
 
 def convert_timestamp_to_sql_date_time(value):
@@ -34,6 +63,12 @@ def store_data_into_bq(dataset, timestamp, event):
         logging.error(f"Query job could not be completed: {error}")
 
 
+def store_data_into_pubsub_topic(event):
+    client = PublisherClient()
+    pubsub_publisher = PubSubPublisher(client, PROJECT_ID, TOPIC_ID)
+    pubsub_publisher.publish(bytes(event, 'utf-8'))
+
+
 def main(request):
     logging.info("Request: %s", request)
 
@@ -50,6 +85,7 @@ def main(request):
         store_data_into_bq(dataset,
                            convert_timestamp_to_sql_date_time(timestamp),
                            event)
+        store_data_into_pubsub_topic(event)
 
         return "", 204
 

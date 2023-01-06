@@ -19,11 +19,17 @@ variable "dataset_id" {
 variable "table_id" {
   default     = "task_cf_table"
   type        = string
-  description = "Project ID to deploy resources in."
+  description = "BigQuery Table"
 }
 
-variable "force_destroy" {
-  default = true
+variable "pubsub_topic_name" {
+  default = "cf_pubsub_topic"
+  type = string
+}
+
+variable "subscription_name" {
+  default = "cf_pubsub_subs1"
+  type = string
 }
 
 variable "deletion_protection" {
