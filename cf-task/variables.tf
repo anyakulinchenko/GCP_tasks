@@ -31,7 +31,3 @@ variable "subscription_name" {
   default = "cf_pubsub_subs1"
   type = string
 }
-
-variable "deletion_protection" {
-  default = false
-}

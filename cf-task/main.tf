@@ -16,7 +16,7 @@ provider "google" {
 resource "google_storage_bucket" "task-cf-storage-bucket" {
     name     = "${var.project_id}-storage-bucket"
     location = var.region
-    #force_destroy = true
+    force_destroy = false
 }
 
 resource "google_bigquery_dataset" "task_cf_dataset" {
