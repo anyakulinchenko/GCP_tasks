@@ -1,0 +1,28 @@
+steps:
+  - id: "Activate virtual environment venv"
+    name: 'gcr.io/cf-task/dataflow-python3:latest'
+    entrypoint: '/bin/bash'
+    args: [ '-c', 'source /venv/bin/activate' ]
+    waitFor: ['-']
+
+  - id: "Create dataflow template"
+    name: 'gcr.io/cf-task/dataflow-python3:latest'
+    entrypoint: 'python'
+    args: [ '-m', 'main',
+         "--job_name=df-job",
+         "--project=cf-task",
+         "--region=europe-central2",
+         "--template_location=gs://cf-task-dataflow-templates/my-template/templates/template_test",
+         "--staging_location=gs://cf-task-dataflow-templates/my-template/staging/",
+         "--temp_location=gs://cf-task-dataflow-templates/my-template/temp/",
+         "--runner=DataflowRunner",
+         "--setup_file='./setup.py'",
+         "--autoscaling_algorithm=NONE",
+         "--input_subscription=projects/cf-task/subscriptions/cf_pubsub_subs1",
+         "--output_table_success_messages=cf-task:df-task-dataset.success_messages",
+         "--output_table_error_messages=cf-task:df-task-dataset.error_messages",
+         "--streaming"
+         ]
+    waitFor: [
+      'Activate virtual environment venv'
+      ]

@@ -1,0 +1,9 @@
+# Default ignored files
+cf-task/.terraform/
+cf-task/secrets/
+cf-task/.idea/
+cf-task/FILE
+
+df-task/venv/
+df-task/.idea/
+
