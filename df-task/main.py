@@ -9,7 +9,7 @@ SCHEMA = ",".join(
     [
         "name:STRING",
         "age:INTEGER",
-        "salary:FLOAT64",
+        "salary:FLOAT",
         "timestamp:TIMESTAMP",
     ]
 )
