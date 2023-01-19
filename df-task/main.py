@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 SCHEMA = ",".join(
     [
-        "name:STRING",
+        "message:STRING",
         "age:INTEGER",
         "salary:FLOAT",
         "timestamp:TIMESTAMP",
@@ -33,7 +33,7 @@ class Parser(beam.DoFn):
             row = json.loads(subs_message_data.decode("utf-8"))
 
             yield {
-                "name": row["name"],
+                "message": row["message"],
                 "age": int(row["age"]),
                 "salary": float(row["salary"]),
                 "timestamp": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
