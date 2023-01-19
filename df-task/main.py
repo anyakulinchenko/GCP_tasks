@@ -36,7 +36,7 @@ class Parser(beam.DoFn):
                 "name": row["name"],
                 "age": int(row["age"]),
                 "salary": float(row["salary"]),
-                "timestamp": row["timestamp"],
+                "timestamp": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
             }
         except Exception as error:
             error_row = {
