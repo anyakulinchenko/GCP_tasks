@@ -1,0 +1,10 @@
+[
+  {
+    "name": "message",
+    "type": "STRING"
+  },
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP"
+  }
+]

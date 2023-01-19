@@ -10,14 +10,32 @@ variable "region" {
   description = "Region"
 }
 
-variable "dataset_id" {
+variable "cf_dataset_id" {
   default     = "task_cf_dataset"
+  type        = string
+  description = "Dataset"
+}
+
+variable "df_dataset_id" {
+  default     = "task_df_dataset"
   type        = string
   description = "Dataset"
 }
 
 variable "table_id" {
   default     = "task_cf_table"
+  type        = string
+  description = "BigQuery Table"
+}
+
+variable "output_table_success_messages" {
+  default     = "output_table_success_messages"
+  type        = string
+  description = "BigQuery Table"
+}
+
+variable "output_table_error_messages" {
+  default     = "output_table_error_messages"
   type        = string
   description = "BigQuery Table"
 }

@@ -1,0 +1,19 @@
+[
+  {
+    "name": "message",
+    "type": "STRING"
+  },
+  {
+    "name": "age",
+    "type": "INTEGER"
+  },
+  {
+    "name": "salary",
+    "type": "FLOAT"
+  },
+  {
+    "name": "timestamp",
+    "type": "TIMESTAMP"
+  }
+]
+

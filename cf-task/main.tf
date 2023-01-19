@@ -20,9 +20,27 @@ resource "google_storage_bucket" "task-cf-storage-bucket" {
 }
 
 resource "google_bigquery_dataset" "task_cf_dataset" {
-  dataset_id = var.dataset_id
+  dataset_id = var.cf_dataset_id
   description = "Public dataset for cf-task"
   location = var.region
+}
+
+resource "google_bigquery_dataset" "task_df_dataset" {
+  dataset_id = var.df_dataset_id
+  description = "Public dataset for cf-task"
+  location = var.region
+}
+
+resource "google_bigquery_table" "output_table_success_messages" {
+  dataset_id = google_bigquery_dataset.task_df_dataset.dataset_id
+  table_id   = var.output_table_success_messages
+  schema = file("schemas/bq_table_schema/task-df-success-messages-raw.json")
+}
+
+resource "google_bigquery_table" "output_table_error_messages" {
+  dataset_id = google_bigquery_dataset.task_df_dataset.dataset_id
+  table_id   = var.output_table_error_messages
+  schema = file("schemas/bq_table_schema/task-df-error-messages-raw.json")
 }
 
 resource "google_bigquery_table" "task_cf_table" {
@@ -72,7 +90,7 @@ resource "google_cloudfunctions_function" "task-cf-function" {
     environment_variables = {
       FUNCTION_REGION = var.region
       GCP_PROJECT = var.project_id
-      DATASET_ID = var.dataset_id
+      DATASET_ID = var.cf_dataset_id
       OUTPUT_TABLE = google_bigquery_table.task_cf_table.table_id
       TOPIC_ID = var.pubsub_topic_name
     }
