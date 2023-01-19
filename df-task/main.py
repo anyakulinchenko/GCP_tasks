@@ -4,6 +4,9 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 import json
 from datetime import datetime
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 SCHEMA = ",".join(
     [
