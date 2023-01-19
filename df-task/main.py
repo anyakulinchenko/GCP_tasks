@@ -69,32 +69,32 @@ def run(options, input_subscription, output_table, output_error_table):
              )
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--input_subscription',
-        default="/subscriptions/cf-task/cf_pubsub_subs1",
-        required=True,
-        help='Input PubSub subscription of the form "/subscriptions/<PROJECT>/<SUBSCRIPTION>".'
-    )
-    parser.add_argument(
-        '--output_table_success_messages',
-        default="cf-task:df-task-dataset.success_messages",
-        required=True,
-        help='Output BigQuery table for normal data'
-    )
-    parser.add_argument(
-        '--output_table_error_messages',
-        default="cf-task:df-task-dataset.error_messages",
-        required=True,
-        help='Output BigQuery table for errors'
-    )
-    known_args, pipeline_args = parser.parse_known_args()
-    pipeline_options = PipelineOptions(pipeline_args)
-    pipeline_options.view_as(SetupOptions).save_main_session = True
-    run(
-        pipeline_options,
-        known_args.input_subscription,
-        known_args.output_table_success_messages,
-        known_args.output_table_error_messages
-    )
+# if __name__ == '__main__':
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--input_subscription',
+    default="/subscriptions/cf-task/cf_pubsub_subs1",
+    required=True,
+    help='Input PubSub subscription of the form "/subscriptions/<PROJECT>/<SUBSCRIPTION>".'
+)
+parser.add_argument(
+    '--output_table_success_messages',
+    default="cf-task:df-task-dataset.success_messages",
+    required=True,
+    help='Output BigQuery table for normal data'
+)
+parser.add_argument(
+    '--output_table_error_messages',
+    default="cf-task:df-task-dataset.error_messages",
+    required=True,
+    help='Output BigQuery table for errors'
+)
+known_args, pipeline_args = parser.parse_known_args()
+pipeline_options = PipelineOptions(pipeline_args)
+pipeline_options.view_as(SetupOptions).save_main_session = True
+run(
+    pipeline_options,
+    known_args.input_subscription,
+    known_args.output_table_success_messages,
+    known_args.output_table_error_messages
+)
