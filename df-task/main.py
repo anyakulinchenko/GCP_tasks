@@ -79,13 +79,13 @@ parser.add_argument(
 )
 parser.add_argument(
     '--output_table_success_messages',
-    default="cf-task:df-task-dataset.success_messages",
+    default="cf-task:task_df_dataset.output_table_success_messages",
     required=True,
     help='Output BigQuery table for normal data'
 )
 parser.add_argument(
     '--output_table_error_messages',
-    default="cf-task:df-task-dataset.error_messages",
+    default="cf-task:task_df_dataset.output_table_error_messages",
     required=True,
     help='Output BigQuery table for errors'
 )
