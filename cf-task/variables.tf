@@ -22,6 +22,18 @@ variable "df_dataset_id" {
   description = "Dataset"
 }
 
+variable "af_dataset_id" {
+  default     = "task_af_dataset"
+  type        = string
+  description = "Dataset"
+}
+
+variable "af_table" {
+  default     = "af_table"
+  type        = string
+  description = "BigQuery Table"
+}
+
 variable "table_id" {
   default     = "task_cf_table"
   type        = string

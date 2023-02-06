@@ -27,8 +27,20 @@ resource "google_bigquery_dataset" "task_cf_dataset" {
 
 resource "google_bigquery_dataset" "task_df_dataset" {
   dataset_id = var.df_dataset_id
-  description = "Public dataset for cf-task"
+  description = "Public dataset for df-task"
   location = var.region
+}
+
+resource "google_bigquery_dataset" "task_af_dataset" {
+  dataset_id = var.af_dataset_id
+  description = "Public dataset for af-task"
+  location = var.region
+}
+
+resource "google_bigquery_table" "af_table" {
+  dataset_id = google_bigquery_dataset.task_af_dataset.dataset_id
+  table_id   = var.af_table
+  schema = file("schemas/bq_table_schema/task-af-schema.json")
 }
 
 resource "google_bigquery_table" "output_table_success_messages" {
