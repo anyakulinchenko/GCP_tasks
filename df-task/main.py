@@ -4,12 +4,15 @@ from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import SetupOptions
 import json
 from datetime import datetime
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 SCHEMA = ",".join(
     [
-        "name:STRING",
+        "message:STRING",
         "age:INTEGER",
-        "salary:FLOAT64",
+        "salary:FLOAT",
         "timestamp:TIMESTAMP",
     ]
 )
@@ -30,10 +33,10 @@ class Parser(beam.DoFn):
             row = json.loads(subs_message_data.decode("utf-8"))
 
             yield {
-                "name": row["name"],
+                "message": row["message"],
                 "age": int(row["age"]),
                 "salary": float(row["salary"]),
-                "timestamp": row["timestamp"],
+                "timestamp": datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
             }
         except Exception as error:
             error_row = {
@@ -69,32 +72,32 @@ def run(options, input_subscription, output_table, output_error_table):
              )
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--input_subscription',
-        default="/subscriptions/cf-task/cf_pubsub_subs1",
-        required=True,
-        help='Input PubSub subscription of the form "/subscriptions/<PROJECT>/<SUBSCRIPTION>".'
-    )
-    parser.add_argument(
-        '--output_table_success_messages',
-        default="cf-task:df-task-dataset.success_messages",
-        required=True,
-        help='Output BigQuery table for normal data'
-    )
-    parser.add_argument(
-        '--output_table_error_messages',
-        default="cf-task:df-task-dataset.error_messages",
-        required=True,
-        help='Output BigQuery table for errors'
-    )
-    known_args, pipeline_args = parser.parse_known_args()
-    pipeline_options = PipelineOptions(pipeline_args)
-    pipeline_options.view_as(SetupOptions).save_main_session = True
-    run(
-        pipeline_options,
-        known_args.input_subscription,
-        known_args.output_table_success_messages,
-        known_args.output_table_error_messages
-    )
+# if __name__ == '__main__':
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '--input_subscription',
+    default="/subscriptions/cf-task/cf_pubsub_subs1",
+    required=True,
+    help='Input PubSub subscription of the form "/subscriptions/<PROJECT>/<SUBSCRIPTION>".'
+)
+parser.add_argument(
+    '--output_table_success_messages',
+    default="cf-task:task_df_dataset.output_table_success_messages",
+    required=True,
+    help='Output BigQuery table for normal data'
+)
+parser.add_argument(
+    '--output_table_error_messages',
+    default="cf-task:task_df_dataset.output_table_error_messages",
+    required=True,
+    help='Output BigQuery table for errors'
+)
+known_args, pipeline_args = parser.parse_known_args()
+pipeline_options = PipelineOptions(pipeline_args)
+pipeline_options.view_as(SetupOptions).save_main_session = True
+run(
+    pipeline_options,
+    known_args.input_subscription,
+    known_args.output_table_success_messages,
+    known_args.output_table_error_messages
+)
