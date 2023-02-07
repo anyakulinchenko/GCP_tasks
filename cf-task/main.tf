@@ -19,6 +19,12 @@ resource "google_storage_bucket" "task-cf-storage-bucket" {
     force_destroy = false
 }
 
+resource "google_storage_bucket" "task-af-bucket" {
+    name     = "${var.project_id}-task-af-bucket"
+    location = var.region
+    force_destroy = false
+}
+
 resource "google_bigquery_dataset" "task_cf_dataset" {
   dataset_id = var.cf_dataset_id
   description = "Public dataset for cf-task"
