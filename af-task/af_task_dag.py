@@ -13,7 +13,7 @@ with DAG(
         "af_task_job",
         schedule_interval="0 * * * *",
         default_args={
-            'start_date': datetime(2023, 1, 18),
+            'start_date': datetime(2023, 2, 7),
             **DEFAULT_DAG_ARGS,
         },
 ) as dag:
@@ -28,7 +28,7 @@ with DAG(
     AF_TASK_OUTPUT_DATASET_NAME = f"{PROJECT_ID}.task_af_dataset"
     AF_TASK_OUTPUT_TABLE = f"{AF_TASK_OUTPUT_DATASET_NAME}.af_table"
 
-    gcs_bucket_name = f"gs://{PROJECT_ID}-task-cf-bucket/"
+    gcs_bucket_name = f"gs://{PROJECT_ID}-task-af-bucket/"
     gcs_file_name = 'gcs_data_from_bq.json'
     gcs_file_full_name = f"{gcs_bucket_name}{gcs_file_name}"
 
